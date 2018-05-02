@@ -98,8 +98,22 @@ object Prakt1 {
    //lazy values
    lazy val x = 1/0
    
+   //lazy evaluation
+   def foo(cond: Boolean, x: => Int) = if(cond) x else 0
+   
    //Streams
    def from(n: Int): Stream[Int] = n #::from(n+1)
+   
+   //currying
+   def add(x: Int)(y: Int) = x+y
+   
+   //ifThenelse currying
+   def ifThenElse[T](cond: Boolean)(th: => T)(el: => T): T = {
+      if(cond) th else el 
+   }
+   
+   //Fibonaccizahlen mit Stream
+   def fibs: Stream[Int] = 1 #:: 1#:: fibs.zip(fibs.tail).map(x=> x._1 + x._2)
   
    def main(args: Array[String]){
      println(myLenfold(List(1,2,3,4,5,6)))
@@ -134,7 +148,27 @@ object Prakt1 {
      
      val x = 0
      println("Test von division durch null")
-     println(and(x>0, 1/x > 0))
+     //println(and(x>0, 1/x > 0))
+     
+     val k = 0
+     val m = foo(false, 1/k)
+     println(m)
+     
+     println("Currying")
+     println(add(1)(2))
+     val add3 = add(3)(_)
+     println(add3)
+     println(add3(3))
+     
+     println("Polymorph ifThenElse")
+     val y = 0
+     val z = ifThenElse[Int](y>0){val z = 1/y
+                                  z+1
+                                 }{0}
+     println(z)
+     
+     //Fibonaccizahlen
+     println(fibs.take(20).toList)
    }
 
   

@@ -1,13 +1,16 @@
-
+/*
+ * Class for all homework in the PVL for Parallele Programmierung
+ */
 
 object AlgebStruct {
   abstract sealed class Formula{
     def toString(): String
-    def implFree(): Formula
-    def nnf(): Formula
-    def simplify(): Formula
+    def implFree(): Formula //Replace all implications equivalently
+    def nnf(): Formula //Move all negations directly in front of atoms
+    def simplify(): Formula //basic simplification
   }
   
+  //Wrapper around Boolean variables to guarantee recursive definition
   case class Atom(atom: Boolean) extends Formula{
    override def toString(): String = {
       atom.toString();
@@ -100,7 +103,7 @@ object AlgebStruct {
      }
      def simplify(): Formula = {
        r match {
-         case Not(v) => v.simplify()
+         case Not(v) => v.simplify() //!!x = x
          case _ => Not(r.simplify())
        }
      }
