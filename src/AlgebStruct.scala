@@ -28,7 +28,7 @@ object AlgebStruct {
   
   case class And(l: Formula, r: Formula) extends Formula{
     override def toString(): String = {
-      l.toString() + " and " + r.toString();
+      "(" + l.toString() + " and " + r.toString() + ")";
     }
     def implFree(): Formula = {
       And(l.implFree(), r.implFree())
@@ -50,7 +50,7 @@ object AlgebStruct {
   
   case class Or(l: Formula, r: Formula) extends Formula{
      override def toString(): String = {
-      l.toString() + " or " + r.toString();
+      "(" + l.toString() + " or " + r.toString() + ")";
      }
      def implFree(): Formula = {
        Or(l.implFree(), r.implFree())
@@ -72,7 +72,7 @@ object AlgebStruct {
   
   case class Imp(l: Formula, r: Formula) extends Formula{
      override def toString(): String = {
-      l.toString() + " implies " + r.toString();
+      "(" + l.toString() + " implies " + r.toString() + ")";
     }
      def implFree(): Formula = {
        Or(Not(l.implFree()), r.implFree())
@@ -109,6 +109,24 @@ object AlgebStruct {
      }
   }
   
+  def cnf(form: Formula): Formula = {
+    form match {
+      case Atom(_) => form
+      case Not(_) => form
+      case And(f, g) => And(cnf(f), cnf(g))
+      case Or(f, g) => distr(f, g)
+      case Imp(f, g) => cnf(Or(Not(f), g))
+    }
+  }
+  
+  def distr(f: Formula, g: Formula): Formula = {
+    (f, g) match {
+      case (And(f1, f2), _) => And(distr(f1, g), distr(f2, g))
+      case (_, And(g1, g2)) => And(distr(g1, f), distr(g2, f))
+      case (_, _) => Or(f, g)
+    }
+  }
+  
   def main(args: Array[String]){
     val p = true
     val q = false
@@ -125,15 +143,5 @@ object AlgebStruct {
     println("f2")
     println(f2)
     println(f2.nnf())
-    
-    val a = And(Not(Atom(p)), Not(Atom(q)))
-    val b = And(Not(Atom(p)), Not(Atom(q)))
-    
-    println(a==b)
-    
-    val f3 = Or(a, b)
-    println(f3)
-    println(f3.simplify())
-    
   }
 }
