@@ -112,10 +112,10 @@ object AlgebStruct {
   def cnf(form: Formula): Formula = {
     form match {
       case Atom(_) => form
-      case Not(_) => form
+      case Not(v) => Not(cnf(v))
       case And(f, g) => And(cnf(f), cnf(g))
       case Or(f, g) => distr(f, g)
-      case Imp(f, g) => cnf(Or(Not(f), g))
+      case Imp(f, g) => cnf(Or(Not(f), g)) //replace implication with other definition via or
     }
   }
   

@@ -12,19 +12,37 @@ class ExampleSuite extends AssertionsForJUnit {
   @Before def initialize() {
     println("Starting Unittests")
   }*/
+  
   @Test def verifynnf() {
     val f1 = Not(And(Atom(true), Atom(false)))
     assert(f1.nnf() == Or(Not(Atom(true)), Not(Atom(false))))
+    
+    val f2 = Not(Or(Atom(true), Atom(false)))
+    assert(f2.nnf() == And(Not(Atom(true)), Not(Atom(false))))
+    
+    val f3 = Or(Not(And(Atom(true), Atom(false))), Atom(false))
+    assert(f3.nnf() == Or(Or(Not(Atom(true)), Not(Atom(false))), Atom(false)))
+    
+    val f4 = Or(Not(And(Atom(true), Atom(false))), Not(And(Atom(true), Atom(false))))
+    assert(f4.nnf() == Or(Or(Not(Atom(true)), Not(Atom(false))), Or(Not(Atom(true)), Not(Atom(false)))))
   }
+  
   @Test def verifyimplfree(){
     val p = true
     val q = false
     val r = true
     val s = false
     
-    val f1 = And(Or(Atom(p), Atom(q)), Imp(Atom(r), Atom(s)))
-    assert(f1.implFree() == And(Or(Atom(p), Atom(q)), Or(Not(Atom(r)), Atom(s))))
+    val f1 = Imp(Atom(p), Atom(q))
+    assert(f1.implFree() == Or(Not(Atom(p)), Atom(q)))
+    
+    val f2 = And(Or(Atom(p), Atom(q)), Imp(Atom(r), Atom(s)))
+    assert(f2.implFree() == And(Or(Atom(p), Atom(q)), Or(Not(Atom(r)), Atom(s))))
+    
+    val f3 = And(Atom(p), Not(Imp(Atom(q), Atom(r))))
+    assert(f3.implFree() == And(Atom(p), Not(Or(Not(Atom(q)), Atom(r)))))
   }
+  
   @Test def verifysimplify(){
     val f1 = Not(Not(Atom(true)))
     assert(f1.simplify() == Atom(true))
@@ -37,7 +55,19 @@ class ExampleSuite extends AssertionsForJUnit {
     val f31 = And(Not(Atom(p)), Not(Atom(q)))
     val f32 = And(Not(Atom(p)), Not(Atom(q)))
     assert(And(f31, f32).simplify() == f31)
+    assert(Or(f31, f32).simplify() == f31)
+    
+    val f41 = And(Atom(true), Atom(false))
+    assert(f41.simplify() == Atom(false))
+    val f42 = And(Atom(false), Atom(true))
+    assert(f42.simplify() == Atom(false))
+    
+    val f51 = Or(Atom(true), Atom(true))
+    assert(f51.simplify() == Atom(true))
+    val f52 = Or(Atom(true), Atom(false))
+    assert(f52.simplify() == Atom(true))
   }
+  
   @Test def verifyCnf(){
     val a = true;
     val b = false;
