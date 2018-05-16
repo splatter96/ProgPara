@@ -114,6 +114,11 @@ object Prakt1 {
    
    //Fibonaccizahlen mit Stream
    def fibs: Stream[Int] = 1 #:: 1#:: fibs.zip(fibs.tail).map(x=> x._1 + x._2)
+   
+   //implizite Klassen (flatmap ist 'bind' von Scala)
+   implicit class OptionSqr(o: Option[Int]){
+     def sqr():Option[Int] =  o.flatMap(x => Some(x*x))
+   } 
   
    def main(args: Array[String]){
      println(myLenfold(List(1,2,3,4,5,6)))
@@ -169,6 +174,11 @@ object Prakt1 {
      
      //Fibonaccizahlen
      println(fibs.take(20).toList)
+     
+     println("implizite Klassen")
+     println(Some(2).sqr)
+     println(Some(5).sqr)
+     println(None.sqr)
    }
 
   

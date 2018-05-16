@@ -6,9 +6,9 @@ object MyOption {
     def bind[B](f: (A) => MyOption[B]): MyOption[B]
   }
   
-  case class MyNil[A]() extends MyOption[A]{
+  case class MyNone[A]() extends MyOption[A]{
     def bind[B](f: (A) => MyOption[B]): MyOption[B] = {
-      MyNil()
+      MyNone()
     }
   }
   
@@ -35,13 +35,24 @@ object MyOption {
     println(x + " => " + MySome(x))    
     println(MySome(x).bind(sqr) + " = " + sqr(x))
     
+    
     println("Gesetz 2")
-    //TODO
+    val mx = MySome(x)
+    val mxb = mx.bind(x => MySome(x))
+    println(mxb + " == " + mx)
+    
+    val mn = MyNone()
+    val mnb = mn.bind(x => MySome())
+    println(mnb + " == " + mn)
+    
     
     println("Gesetz 3")
-    val mx = MySome(x)
     val left = mx.bind(sqr).bind(mkString)
     val right = mx.bind((x) => sqr(x).bind(mkString))
     println(left + " == " + right)
+    
+    val leftn = MyNone().bind(sqr).bind(mkString)
+    val rightn = MyNone().bind((x: Int) => sqr(x).bind(mkString))
+    println(leftn + " == " + rightn)
   }
 }
