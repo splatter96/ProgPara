@@ -120,26 +120,59 @@ object Prakt1 {
      def sqr():Option[Int] =  o.flatMap(x => Some(x*x))
    } 
   
+   //Addition fuer zwei Monaden
+   implicit class OptionAlg(l: Option[Int]){
+     def +(r: Option[Int]): Option[Int] = {
+        l.flatMap(x => r.flatMap(y => Some(x + y)))
+     }
+     
+     def -(r: Option[Int]): Option[Int] = {
+        l.flatMap(x => r.flatMap(y => Some(x - y)))
+     }
+     
+     def *(r: Option[Int]): Option[Int] = {
+        l.flatMap(x => r.flatMap(y => Some(x * y)))
+     }
+     
+     def /(r: Option[Int]): Option[Int] = {
+        l.flatMap(x => r.flatMap(y =>
+          y match { //special case division by zero 
+            case 0 => None
+            case _ => Some(x / y)
+          }
+        ))
+     }
+     
+   } 
+   
    def main(args: Array[String]){
+     /*
      println(myLenfold(List(1,2,3,4,5,6)))
      println(myLenfold(List()))
-     
+     */
+     /*
      println(myMaxfold(List(4,-3,-2,1)))
      println(myMinfold(List(4,3,2,-1)))
-     
+     */
+     /*
      println(myMaxfold(List(-1,-2,3,4)))
      println(myMinfold(List(-2,-1,0,3,4)))
-     
+     */
+     /*
      println(horn(List(2,4,-2,-4), 1))
      println(horn(List(1,0,1), 1))
+     */
      
+     /*
      val l = List(Some(1.0), Some(2.0), Some(3.0)) 
      println(myMean(l))
      println(myMean(List()))
      println(myMean(List(Some(1.0), None, Some(2.0))))
      println(myMean(List(None, Some(1.0), None)))
      println(myMean(Nil))
+     */
      
+     /*
      println("\nand und or")
      println(and(true, false))
      println(and(true, true))
@@ -150,7 +183,9 @@ object Prakt1 {
      println(or(true, true))
      println(or(false, false))
      println(or(false, true))
+     */
      
+     /*
      val x = 0
      println("Test von division durch null")
      //println(and(x>0, 1/x > 0))
@@ -158,27 +193,48 @@ object Prakt1 {
      val k = 0
      val m = foo(false, 1/k)
      println(m)
+     */
      
+     /*
      println("Currying")
      println(add(1)(2))
      val add3 = add(3)(_)
      println(add3)
      println(add3(3))
+     */
      
+     /*
      println("Polymorph ifThenElse")
      val y = 0
      val z = ifThenElse[Int](y>0){val z = 1/y
                                   z+1
                                  }{0}
      println(z)
+     */
      
      //Fibonaccizahlen
-     println(fibs.take(20).toList)
+     //println(fibs.take(20).toList)
      
+     /*
      println("implizite Klassen")
      println(Some(2).sqr)
      println(Some(5).sqr)
      println(None.sqr)
+     */
+     
+     println(Some(5).+(Some(3)))
+     println(None.+(Some(3)))
+     println(Some(3).+(None))
+     println(None + None) //syntactic sugar for the above
+     
+     println(Some(10) / Some(5))
+     println(Some(10) / Some(3))
+     println(Some(10) / Some(0)) //division by zero should be None
+     
+     println(List(1, 2, 3).flatMap(x => List(2*x)))
+     println(List(1, 2, 3).flatMap(x => List(x)))
+     
+     println(List(1,2, 3).map(x => List(2*x)))         
    }
 
   
