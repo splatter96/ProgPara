@@ -147,8 +147,11 @@ object AlgebStruct {
     f match {
       case And(l, r) => solve(l) && solve(r)
       case Or(Atom(true), _) => true //trivial case one static true
-      case Or(_, Atom(true)) => true //trivial case one staticc true
+      case Or(_, Atom(true)) => true //trivial case one static true
       case Or(l, r) => r.contains(Not(l)) || l.contains(Not(r)) //find not l in right path or find not r in left path
+      case Atom(x) => x
+      case Not(x) => !solve(x)
+      case _ => throw new IllegalArgumentException("Formula is not in CNF")
     }
   }
   
@@ -171,11 +174,14 @@ object AlgebStruct {
     
     println("Solver")
     val fs = And(Or(Atom(p), Atom(q)), Or(Atom(r), Atom(s)))
-    val fs2 = And(Or(Atom(q), Atom(q)), Or(Atom(s), Not(Atom(s))))
+    val fs2 = And(Or(Atom(q), Atom(q)), Or(Atom(s), Not(Atom(s))))    
+    val fs3 = And(Or(Atom(p), Atom(q)), And(Or(Atom(r), Atom(s)), Or(Atom(q), Atom(q))))
     println(fs)
     println(fs2)
+    println(fs3)
     
     println(solve(fs))
     println(solve(fs2))
+    println(solve(fs3))
   }
 }

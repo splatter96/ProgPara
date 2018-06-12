@@ -87,4 +87,24 @@ class ExampleSuite extends AssertionsForJUnit {
     val fcnf = Or(Or(Atom(a), Atom(b)), And(Atom(c), Or(Atom(d), Atom(e))))
     assert(cnf(fcnf) == And(Or(Atom(c), Or(Atom(a), Atom(b))), Or(Or(Atom(d), Atom(e)), Or(Atom(a), Atom(b)))))
   }
+  
+  @Test def verifySolve(){    
+    val p = true
+    val q = false
+    val r = true
+    val s = false
+    
+    val fs = And(Or(Atom(p), Atom(q)), Or(Atom(r), Atom(s)))
+    val fs2 = And(Or(Atom(q), Atom(q)), Or(Atom(s), Not(Atom(s))))    
+    val fs3 = And(Or(Atom(p), Atom(q)), And(Or(Atom(r), Atom(s)), Or(Atom(q), Atom(q))))
+    val fs4 = Imp(Atom(p), Atom(q))
+    
+    assert(solve(fs) == true)
+    assert(solve(fs2) == false)
+    assert(solve(fs3) == false)
+    
+    assertThrows[IllegalArgumentException] {
+      solve(fs4)
+    }
+  }
 }
