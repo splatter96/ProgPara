@@ -1,17 +1,17 @@
 /*
- * Class for all homework in the PVL for Parallele Programmierung
+ * Class for all homework in the PVL for the lecture Parallele Programmierung
  */
 
 object AlgebStruct {
   abstract sealed class Formula{
     def toString(): String
-    def implFree(): Formula //Replace all implications equivalently
-    def nnf(): Formula //Move all negations directly in front of atoms
-    def simplify(): Formula //basic simplification
+    def implFree(): Formula //replace all implications equivalently
+    def nnf(): Formula //move all negations directly in front of atoms
+    def simplify(): Formula //basic simplifications
     def contains(f: Formula): Boolean //used for solving cnf formulas
   }
   
-  //Wrapper around Boolean variables to guarantee recursive definition
+  //wrapper around boolean variables to guarantee recursive definition
   case class Atom(atom: Boolean) extends Formula{
    override def toString(): String = {
       atom.toString();
@@ -110,7 +110,7 @@ object AlgebStruct {
          case Atom(o) => Not(Atom(o))
          case And(al,ar) => Or(Not(al), Not(ar)).nnf()
          case Or(ol, or) => And(Not(ol), Not(or)).nnf()
-         case Imp(il, ir) => And(il, Not(ir)).nnf()
+         case Imp(il, ir) => And(il, Not(ir)).nnf() //via a -> b == !a v b 
          case Not(no) => no.nnf() //remove double negation
        }
      }
@@ -146,9 +146,7 @@ object AlgebStruct {
   def solve(f: Formula): Boolean = {
     f match {
       case And(l, r) => solve(l) && solve(r)
-      case Or(Atom(true), _) => true //trivial case one static true
-      case Or(_, Atom(true)) => true //trivial case one static true
-      case Or(l, r) => r.contains(Not(l)) || l.contains(Not(r)) //find not l in right path or find not r in left path
+      case Or(l, r) => solve(l) || solve(r) || r.contains(Not(l)) || l.contains(Not(r))
       case Atom(x) => x
       case Not(x) => !solve(x)
       case _ => throw new IllegalArgumentException("Formula is not in CNF")
@@ -161,6 +159,7 @@ object AlgebStruct {
     val r = true
     val s = false
     
+    /*
     val f = And(Or(Atom(p), Atom(q)), Imp(Atom(r), Atom(s)))
     val f2 = Not(And(Not(Or(Atom(p), Atom(r))), Atom(q)))
     
@@ -171,17 +170,7 @@ object AlgebStruct {
     println("f2")
     println(f2)
     println(f2.nnf())
+    */
     
-    println("Solver")
-    val fs = And(Or(Atom(p), Atom(q)), Or(Atom(r), Atom(s)))
-    val fs2 = And(Or(Atom(q), Atom(q)), Or(Atom(s), Not(Atom(s))))    
-    val fs3 = And(Or(Atom(p), Atom(q)), And(Or(Atom(r), Atom(s)), Or(Atom(q), Atom(q))))
-    println(fs)
-    println(fs2)
-    println(fs3)
-    
-    println(solve(fs))
-    println(solve(fs2))
-    println(solve(fs3))
   }
 }

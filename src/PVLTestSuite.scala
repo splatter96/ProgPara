@@ -98,10 +98,18 @@ class ExampleSuite extends AssertionsForJUnit {
     val fs2 = And(Or(Atom(q), Atom(q)), Or(Atom(s), Not(Atom(s))))    
     val fs3 = And(Or(Atom(p), Atom(q)), And(Or(Atom(r), Atom(s)), Or(Atom(q), Atom(q))))
     val fs4 = Imp(Atom(p), Atom(q))
+    val fs5 = Or(Atom(q), Not(Atom(q)))
+    val fs6 = Or(Atom(p), Not(Atom(p)))
+    val fs7 = And(Or(Atom(q), Atom(q)),Or(Atom(p), Not(Atom(p))))
+    val fs8 = And(Or(Atom(p), Atom(q)), Or(Not(Atom(q)), Or(Atom(q), Atom(q))))
     
     assert(solve(fs) == true)
     assert(solve(fs2) == false)
     assert(solve(fs3) == false)
+    assert(solve(fs5) == true)
+    assert(solve(fs6) == true)
+    assert(solve(fs7) == false)
+    assert(solve(fs8) == true)
     
     assertThrows[IllegalArgumentException] {
       solve(fs4)
